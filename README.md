@@ -15,6 +15,7 @@ Optimization: Poor hash function using hash table 2 and linear probing to minimi
 To get a hash value, I used the movie quote length, cubed it, and added by the amount of letters w, p, and m there were in the quote. I tested a size 1.5*size of movies and just size of movies, and with the 1.5*size, I got 7500 unused buckets, 14,394,436 collisions, and a 0:00:02.976818 runtime. For the size of movies, I got 0 unused buckets, 27,599,863 collisions, and a 0:00:04.421303 runtime. Between the two, the size of movies nearly doubled the amount of collisions and runtime. Compared to linked-list, both of these got way more collisions and runtime. Commit 2 seems to be the best so far.
 
 Commit 4:
-
+Optimization: Good hash function using hash table 2 and linear probing to minimize collisions
+To get a hash value, I got the counts of capital letters and vowels. I had three different equations: one for if there were an even number of characters in the string, one if there was at least oen vowel if it was an odd number of characters, and the leftovers which would just take the length of the quote. I ran 1.5*size of movies, 1.25..., and just size of movies. The best ended up being 1.25*size with 3750 unused buckets, 12,523,689 collisions, and a 0:00:01.517210 runtime. This one just beat the 1.5*size of movies for commit 3, so I'll count it as a win. Commit 2 is the best overall, though.
 
 Commit 5:
