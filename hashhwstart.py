@@ -13,15 +13,22 @@ import time
 # function will return a hash value 
 def hashValue(title, sizeOfTable):
     # hash function 1
-    value = len(title) # hash function will be adding up the number of characters in the string
-    value %= sizeOfTable
-    # hash function 2
+    #value = len(title) # hash function will be adding up the number of characters in the string
+    # hash function 2, optimization goal is t minimize collisions, add amount of vowels to h.f. 1
+    vowels = 'aeiou'
+    vowel_count = 0                                           # initialize vowel count                  
+    for char in title.lower():                                # convert title to all lowercase
+        if char in vowels:
+            vowel_count += 1
+    value = len(title) + vowel_count
     # hash function 3
     # hash function 4
+    value %= sizeOfTable
     return value
 
 # derive all data from csv file #
-movies = []                                                   # create list
+movies = []                                                   # create list         
+longest_title = 0                                             # create variable for determining linked list size    
 with open("MOCK_DATA.csv", "r", encoding="utf-8") as file:    # open file and read it, encoding is different from default
     next(file)                                                # skip header line
     text = file.readlines()                                   # make a list of strings by reading each line
@@ -30,23 +37,31 @@ with open("MOCK_DATA.csv", "r", encoding="utf-8") as file:    # open file and re
         for i in range(9):                                    # extract all parts of movie data (there are 9 parts for one movie)
             tempData = line.strip().split(',')[i]
             tempMovieData.append(tempData)                    # attach all parts into one list for the one movie
+            if i == 0:
+                if longest_title < len(tempMovieData[i]):
+                    longest_title = len(tempMovieData[i]) 
         movies.append(tuple(tempMovieData))                   # add all parts of movie list into movies list and unable to change
 
 # start time to see how long it takes to construct the hash table
 start_time = datetime.now()
 
-# size of hash table will be amount of movies #
-fixed_array = [None] * len(movies)
+# size of hash table #
+# poor optimization (commit 1), amount of movies
+#fixed_array = [None] * len(movies)
+# minimize wasted space (commit 2), longest length of movies used as size
+fixed_array = [None] * longest_title
+#print(f'Length of hash table is {len(fixed_array)}')        # testing
 
 # linked list hash table with a poor hash function #
 # extra info: if >1 keys collide, a linked list stores the values at that index
 for movie in movies:
-    key = hashValue(movie[0], len(movies))                   # hash table 1 (movie title as key)
+    #key = hashValue(movie[0], len(movies))                   # hash table 1 (movie title as key)
+    key = hashValue(movie[0], longest_title)
     if(fixed_array[key] == None):
         fixed_array[key] = [movie]                           # put into title hash table, begin linkedList
     else:
         fixed_array[key].append(movie)                       # more than one value, append movie to linkedList
-   
+
 # end time     
 end_time = datetime.now() 
   
@@ -65,7 +80,7 @@ for i in fixed_array:
 print(f"Unused buckets: {waste_tally}")
 # s.c. 2: # of collisions that occured during construction
 collision_tally = 0                                          # only 1 collision if there is at least piece of data since list will append
-for i in fixed_array:
+for i in fixed_array:                                        # ^ applies to linked list hash tables only
     if(i != None):
         collision_tally += len(i)-1                          # len starts at 1, so subtracting 1 for the first value                     
 print(f"Amount of collisions: {collision_tally}")
