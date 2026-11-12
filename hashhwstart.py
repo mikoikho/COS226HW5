@@ -15,8 +15,10 @@ import time
 
 # function will return a hash value 
 def hashValue(movieElement, sizeOfTable):
+    
     # hash function 1
     #value = len(movieElement) # hash function will be adding up the number of characters in the string
+    
     # hash function 2, optimization goal is t minimize collisions, add amount of vowels to h.f. 1
     #vowels = 'aeiou'
     #vowel_count = 0                                          # initialize vowel count                  
@@ -24,14 +26,31 @@ def hashValue(movieElement, sizeOfTable):
         #if char in vowels:
             #vowel_count += 1
     #value = len(movieElement) + vowel_count
+    
     # hash function 3
-    consonants = 'wpm'                                        # choosing 3 consonants to track                     
-    randomLetter_count = 0
-    for char in movieElement.lower():                  
-            if char in consonants:
-                randomLetter_count += 1                       # tally amount of chosen consonants in title
-    value = len(movieElement) ** 3 + randomLetter_count       # cube the length of the movie quote as well                              
+    #consonants = 'wpm'                                       # choosing 3 consonants to track                     
+    #randomLetter_count = 0
+    #for char in movieElement.lower():                  
+            #if char in consonants:
+                #randomLetter_count += 1                      # tally amount of chosen consonants in title
+    #value = len(movieElement) ** 3 + randomLetter_count      # cube the length of the movie quote as well     
+                             
     # hash function 4
+    lowercase_count = 0
+    vowels = 'aeiou'
+    vowel_count = 0     
+    for char in movieElement:
+        if char.islower():
+            lowercase_count += 1
+        if char.lower() in vowels:
+            vowel_count += 1                                                  
+    if (len(movieElement)//2 == 0):                           # if even amount of chars in string
+        value = len(movieElement)**2 + lowercase_count**2
+    elif vowel_count != 0:
+        value = len(movieElement) * vowel_count**4
+    else: 
+        value = len(movieElement)
+    
     value %= sizeOfTable                                      # ensure value is within size of the table
     return value
 
@@ -60,9 +79,11 @@ start_time = datetime.now()
 #fixed_array = [None] * len(movies)
 # minimize wasted space (commit 2), longest length of movies used as size
 #fixed_array = [None] * longest_title
-# # poor optimization (commit 3), amount of movies * 1.5
+# poor optimization (commit 3), amount of movies * 1.5
 #fixed_array = [None] * int(1.5 * len(movies))
-fixed_array = [None] * len(movies)
+#fixed_array = [None] * len(movies)
+# good optimization (commit 4)
+fixed_array = [None] * int(1.5 * len(movies))
 #print(f'Length of hash table is {len(fixed_array)}')        # testing
 
 # linked list hash table with a poor hash function #
@@ -113,9 +134,9 @@ print(f"Time taken to run: {end_time - start_time}")
 
 # extra info ############################################################
 # hash table 1 (movie title as key)
-#key = hashValue(movies[0], size of hash table)
+#key = hashValue(movies[loop][0], size of hash table)
 # put into title hash table
 # hash table 2 (movie quote as key)
-#key = hashValue(movies[8], size of hash table)
+#key = hashValue(movies[loop][8], size of hash table)
 # put into the quote hash table
 # linear probing, need at least 15000 size (since there are 15000 values)
