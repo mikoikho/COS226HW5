@@ -1,11 +1,11 @@
 #######################################################################
 # Mikolas Macion
 # 11/7/2026
-# Hash something out (HW5): Describe what the assignment is and how
-# you did it... how does each has function work?
+# Hash something out (HW5): I created hash tables and functions based on
+# movie titles and quotes using the linked-list or linear probing
+# approach. I made 5 different ones and compared them all.
 #######################################################################
 
-# you did the ss for commit 3 so just add all the stuff into github
 # you ran it 1.5 times the size of the list and then also just the size of the list (linear probing)
 
 # commit each time after attempting!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -44,7 +44,7 @@ def hashValue(movieElement, sizeOfTable):
             #lowercase_count += 1
         #if char.lower() in vowels:
             #vowel_count += 1                                                  
-    #if (len(movieElement)//2 == 0):                           # if even amount of chars in string
+    #if (len(movieElement)//2 == 0):                          # if even amount of chars in string
         #value = len(movieElement)**2 + lowercase_count**2
     #elif vowel_count != 0:
         #value = len(movieElement) * vowel_count**4
@@ -54,10 +54,10 @@ def hashValue(movieElement, sizeOfTable):
     # hash function 5 (improved hash function 2)
     vowels = 'aeiou'
     vowel_count = 0                                                     
-    for char in movieElement.lower():                    
+    for char in movieElement.lower():                         # tally up all vowels in title                 
         if char in vowels:
             vowel_count += 1
-    value = (len(movieElement)*8) - (vowel_count*3)
+    value = (len(movieElement)*8) - (vowel_count*3)           # random function I made up
     
     value %= sizeOfTable                                      # ensure value is within size of the table
     return value
