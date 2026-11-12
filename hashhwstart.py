@@ -36,20 +36,28 @@ def hashValue(movieElement, sizeOfTable):
     #value = len(movieElement) ** 3 + randomLetter_count      # cube the length of the movie quote as well     
                              
     # hash function 4
-    lowercase_count = 0
+    #lowercase_count = 0
+    #vowels = 'aeiou'
+    #vowel_count = 0     
+    #for char in movieElement:
+        #if char.islower():
+            #lowercase_count += 1
+        #if char.lower() in vowels:
+            #vowel_count += 1                                                  
+    #if (len(movieElement)//2 == 0):                           # if even amount of chars in string
+        #value = len(movieElement)**2 + lowercase_count**2
+    #elif vowel_count != 0:
+        #value = len(movieElement) * vowel_count**4
+    #else: 
+        #value = len(movieElement)
+    
+    # hash function 5 (improved hash function 2)
     vowels = 'aeiou'
-    vowel_count = 0     
-    for char in movieElement:
-        if char.islower():
-            lowercase_count += 1
-        if char.lower() in vowels:
-            vowel_count += 1                                                  
-    if (len(movieElement)//2 == 0):                           # if even amount of chars in string
-        value = len(movieElement)**2 + lowercase_count**2
-    elif vowel_count != 0:
-        value = len(movieElement) * vowel_count**4
-    else: 
-        value = len(movieElement)
+    vowel_count = 0                                                     
+    for char in movieElement.lower():                    
+        if char in vowels:
+            vowel_count += 1
+    value = (len(movieElement)*8) - (vowel_count*3)
     
     value %= sizeOfTable                                      # ensure value is within size of the table
     return value
@@ -83,7 +91,9 @@ start_time = datetime.now()
 #fixed_array = [None] * int(1.5 * len(movies))
 #fixed_array = [None] * len(movies)
 # good optimization (commit 4)
-fixed_array = [None] * int(1.5 * len(movies))
+#fixed_array = [None] * int(1.5 * len(movies))
+# commit 5
+fixed_array = [None] * int(len(movies)/100)
 #print(f'Length of hash table is {len(fixed_array)}')        # testing
 
 # linked list hash table with a poor hash function #
@@ -94,18 +104,19 @@ for movie in movies:
     # linked list
     #key = hashValue(movie[0], len(movies))                  # hash table 1 (movie title as key)
     #key = hashValue(movie[0], longest_title)                # hash table 2
-    #if(fixed_array[key] == None):
-        #fixed_array[key] = [movie]                          # put into title hash table, begin linkedList
-    #else:
-        #fixed_array[key].append(movie)                      # more than one value, append movie to linkedList
+    key = hashValue(movie[0], len(fixed_array))
+    if(fixed_array[key] == None):
+        fixed_array[key] = [movie]                          # put into title hash table, begin linkedList
+    else:
+        fixed_array[key].append(movie)                      # more than one value, append movie to linkedList
     # linear probing
-    key =  hashValue(movie[8], len(fixed_array))             # hash table 3 (movie quote as key)
-    while fixed_array[key] != None:
-        key += 1
-        collision_tally += 1                                 # linear probing implemented
-        if key == len(fixed_array):                          # if key is at the end of the array
-            key = 0                                          # send key back to start of array
-    fixed_array[key] = movie
+    #key =  hashValue(movie[8], len(fixed_array))             # hash table 3 (movie quote as key)
+    #while fixed_array[key] != None:
+        #key += 1
+        #collision_tally += 1                                 # linear probing implemented
+        #if key == len(fixed_array):                          # if key is at the end of the array
+            #key = 0                                          # send key back to start of array
+    #fixed_array[key] = movie
 
 # end time     
 end_time = datetime.now() 
@@ -124,10 +135,10 @@ for i in fixed_array:
         waste_tally += 1
 print(f"Unused buckets: {waste_tally}")
 # s.c. 2: # of collisions that occured during construction
-#collision_tally = 0                                         # only 1 collision if there is at least piece of data since list will append
-#for i in fixed_array:                                       # ^ applies to linked list hash tables only
-    #if(i != None):
-        #collision_tally += len(i)-1                         # len starts at 1, so subtracting 1 for the first value                     
+collision_tally = 0                                         # only 1 collision if there is at least piece of data since list will append
+for i in fixed_array:                                       # ^ applies to linked list hash tables only
+    if(i != None):
+        collision_tally += len(i)-1                         # len starts at 1, so subtracting 1 for the first value                     
 print(f"Amount of collisions: {collision_tally}")
 # s.c. 3: time taken to construct the hash table
 print(f"Time taken to run: {end_time - start_time}")
